@@ -80,6 +80,9 @@ function resetKey(){
 }
 
 function writeHolidaysOnSheet(){
+  var form = HtmlService.createTemplateFromFile('index').evaluate();
+  SpreadsheetApp.getUi().showModalDialog(form, "API Key and dates");
+
   var headers = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + Utilities.base64Encode(userProperties.getProperty('APIKEY') + ":" + '')
@@ -102,7 +105,14 @@ function writeHolidaysOnSheet(){
         var start = holidays[i].start;
         var end = holidays[i].end;
         var type = holidays[i].type.name;
-        var amount = holidays[i].amount.amount + ' ' + holidays[i].amount.unit;
+        var unit = holidays[i].amount.unit;
+        if (unit == 'hours'){
+          var amount_days = (holidays[i].amount.amount/24)
+          var amount = Math.round(amount_days * 100) / 100;
+        }
+        else{
+          var amount = holidays[i].amount.amount  
+        }
         var status = holidays[i].status.status;
         var tag = start + " - " + end
 
@@ -112,6 +122,25 @@ function writeHolidaysOnSheet(){
     }
   }
 }
+
+//PROCESS FORM
+function processForm(formObject){ 
+  var sheet = SpreadsheetApp.getActiveSheet();
+  sheet.appendRow([formObject.first_name,
+                formObject.apikey,
+                formObject.startdate,
+                formObject.enddate
+                //Add your new field names here
+                ]);
+}
+ 
+//INCLUDE HTML PARTS, EG. JAVASCRIPT, CSS, OTHER HTML FILES
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
+
+
+
 
 function getEmployees(headers){
   var response = callAPIwithGet(EMPLOYEESAPIURL, false, headers);
