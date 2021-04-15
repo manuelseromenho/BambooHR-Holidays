@@ -1,15 +1,17 @@
-<form id="myForm" onsubmit="handleFormSubmit(this)">
+<form id="myForm" onsubmit="handleFormSubmit(this)" autocomplete="off" >
   <div class="form-group">
     <label for="apikey">API Key</label>
-    <input class="form-control form-control-sm" type="text" class="form-control" id="apikey" name="apikey" placeholder="API Key">
+    <input class="form-control form-control-sm" type="text" id="apikey" name="apikey" placeholder="API Key" required>
   </div>
-  <div class="form-group">
-    <label for="start_date">Start Date (format YYYY-MM-DD)</label>
-    <input class="form-control form-control-sm .datepicker" type="text" class="form-control" id="start_date" name="start_date" placeholder="Start Date">
+
+  <div class="form-group date" >
+    <input data-date-format="yyyy-mm-dd" class="form-control form-control-sm datepicker table-condensed" placeholder="Start Date" id="start_date" name="start_date" required>
   </div>
-  <div class="form-group">
-    <label for="end_date">End Date (format YYYY-MM-DD)</label>
-    <input class="form-control form-control-sm .datepicker" type="text" class="form-control" id="end_date" name="end_date" placeholder="End Date">
+
+  <div class="form-group date" >
+    <input data-date-format="yyyy-mm-dd" class="form-control form-control-sm datepicker table-condensed" placeholder="End Date" id="end_date" name="end_date" required>
   </div>
+
   <button type="submit" class="btn btn-primary">Save</button>
 </form>
+

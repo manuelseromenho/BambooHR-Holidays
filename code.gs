@@ -79,13 +79,6 @@ function resetKey(){
   userProperties.deleteProperty(APIKEY);
 }
 
-function test(){
-    console.log(userProperties.getProperty('APIKEY'));
-    console.log(userProperties.getProperty('STARTDATE'));
-    console.log(userProperties.getProperty('ENDDATE'));
-}
-
-
 function main(){
   var form = HtmlService.createTemplateFromFile('index').evaluate();
   var apiKey = userProperties.getProperty('APIKEY');
@@ -104,6 +97,8 @@ function writeHolidaysOnSheet(){
     'Authorization': 'Basic ' + Utilities.base64Encode(userProperties.getProperty('APIKEY') + ":" + '')
   }
   
+//  ui = SpreadsheetApp.getUi()
+
   if (checkSetup()==true){
     HolidaysSheet.clear();
     HolidaysSheet.getRange("A1:H1").setValues([
@@ -140,21 +135,20 @@ function writeHolidaysOnSheet(){
 }
 
 //PROCESS FORM
-function processForm(formObject){ 
-  var apiKey = formObject.apikey
-  var startDate = formObject.start_date
-  var endDate = formObject.end_date
+function processForm(dataObject){ 
+
+  var apiKey = dataObject.apikey
+  var startDate = dataObject.start_date
+  var endDate = dataObject.end_date
 
   userProperties.setProperty('STARTDATE', startDate);
   userProperties.setProperty('ENDDATE', endDate);
   userProperties.setProperty('APIKEY', apiKey);
-  
-  var sheet = SpreadsheetApp.getActiveSheet();
-  sheet.appendRow([
-    formObject.apikey,
-    formObject.start_date,
-    formObject.end_date
-    ]);
+
+  writeHolidaysOnSheet();
+  /*if (formObject.form.write == true){
+      google.script.run.writeHolidaysOnSheet();
+  }*/
 }
  
 //INCLUDE HTML PARTS, EG. JAVASCRIPT, CSS, OTHER HTML FILES

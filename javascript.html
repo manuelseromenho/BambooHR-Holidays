@@ -10,9 +10,7 @@
   }
   window.addEventListener('load', preventFormSubmit);
        
-  function handleFormSubmit(formObject) {
-    
-    //document.getElementById("myForm").reset();
-    google.script.host.close(google.script.run.processForm(formObject));
+  function handleFormSubmit(form) {
+    google.script.host.close(google.script.run.processForm(form));
   }
 </script>
