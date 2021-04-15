@@ -8,10 +8,11 @@
       });
     }
   }
-  window.addEventListener('load', preventFormSubmit);    
+  window.addEventListener('load', preventFormSubmit);
        
   function handleFormSubmit(formObject) {
-    google.script.run.processForm(formObject);
-    document.getElementById("myForm").reset();
+    
+    //document.getElementById("myForm").reset();
+    google.script.host.close(google.script.run.processForm(formObject));
   }
 </script>

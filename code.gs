@@ -18,7 +18,7 @@ function onOpen() {
   .addItem('Delete API key', 'resetKey')
   .addItem('Set Start Date', 'setStartDate')
   .addItem('Set End Date', 'setEndDate')
-  .addItem('Get Holidays from BambooHR', 'writeHolidaysOnSheet')
+  .addItem('Get Holidays from BambooHR', 'main')
   .addSeparator()
   .addToUi();
 }
@@ -71,18 +71,34 @@ function setEndDate(){
 
 function setAPIKey(){
   ui = SpreadsheetApp.getUi()
-  var scriptValue = ui.prompt('Please provide your API key.' , ui.ButtonSet.OK);
-  userProperties.setProperty('APIKEY', scriptValue.getResponseText());
+  var apiKey = ui.prompt('Please provide your API key.' , ui.ButtonSet.OK);
+  userProperties.setProperty('APIKEY', apiKey.getResponseText());
 }
 
 function resetKey(){
   userProperties.deleteProperty(APIKEY);
 }
 
-function writeHolidaysOnSheet(){
-  var form = HtmlService.createTemplateFromFile('index').evaluate();
-  SpreadsheetApp.getUi().showModalDialog(form, "API Key and dates");
+function test(){
+    console.log(userProperties.getProperty('APIKEY'));
+    console.log(userProperties.getProperty('STARTDATE'));
+    console.log(userProperties.getProperty('ENDDATE'));
+}
 
+
+function main(){
+  var form = HtmlService.createTemplateFromFile('index').evaluate();
+  var apiKey = userProperties.getProperty('APIKEY');
+  var startDate = userProperties.getProperty('STARTDATE');
+  var endDate = userProperties.getProperty('ENDDATE');
+
+  form.append('<script>document.getElementById("apikey").value="'+apiKey+'"</script>')
+  form.append('<script>document.getElementById("start_date").value="'+startDate+'"</script>')
+  form.append('<script>document.getElementById("end_date").value="'+endDate+'"</script>')
+  SpreadsheetApp.getUi().showModalDialog(form, "API Key and dates");
+}
+
+function writeHolidaysOnSheet(){
   var headers = {
     'Accept': 'application/json',
     'Authorization': 'Basic ' + Utilities.base64Encode(userProperties.getProperty('APIKEY') + ":" + '')
@@ -125,21 +141,26 @@ function writeHolidaysOnSheet(){
 
 //PROCESS FORM
 function processForm(formObject){ 
+  var apiKey = formObject.apikey
+  var startDate = formObject.start_date
+  var endDate = formObject.end_date
+
+  userProperties.setProperty('STARTDATE', startDate);
+  userProperties.setProperty('ENDDATE', endDate);
+  userProperties.setProperty('APIKEY', apiKey);
+  
   var sheet = SpreadsheetApp.getActiveSheet();
-  sheet.appendRow([formObject.first_name,
-                formObject.apikey,
-                formObject.startdate,
-                formObject.enddate
-                //Add your new field names here
-                ]);
+  sheet.appendRow([
+    formObject.apikey,
+    formObject.start_date,
+    formObject.end_date
+    ]);
 }
  
 //INCLUDE HTML PARTS, EG. JAVASCRIPT, CSS, OTHER HTML FILES
 function include(filename) {
   return HtmlService.createHtmlOutputFromFile(filename).getContent();
 }
-
-
 
 
 function getEmployees(headers){
