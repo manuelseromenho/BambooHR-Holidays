@@ -96,8 +96,6 @@ function writeHolidaysOnSheet(){
     'Accept': 'application/json',
     'Authorization': 'Basic ' + Utilities.base64Encode(userProperties.getProperty('APIKEY') + ":" + '')
   }
-  
-//  ui = SpreadsheetApp.getUi()
 
   if (checkSetup()==true){
     HolidaysSheet.clear();
@@ -132,6 +130,7 @@ function writeHolidaysOnSheet(){
       }
     }
   }
+
 }
 
 //PROCESS FORM
@@ -145,10 +144,7 @@ function processForm(dataObject){
   userProperties.setProperty('ENDDATE', endDate);
   userProperties.setProperty('APIKEY', apiKey);
 
-  writeHolidaysOnSheet();
-  /*if (formObject.form.write == true){
-      google.script.run.writeHolidaysOnSheet();
-  }*/
+  openDialogue();
 }
  
 //INCLUDE HTML PARTS, EG. JAVASCRIPT, CSS, OTHER HTML FILES
@@ -196,3 +192,12 @@ function callAPIwithGet(url, muteHttpExceptions, headers) {
   Logger.log("API request failed: " + url); 
   return response;
 }
+
+
+function openDialogue() {
+  var h = HtmlService.createTemplateFromFile('loading').evaluate().setHeight(100).setWidth(100);
+  SpreadsheetApp.getUi().showModalDialog(h, "Loading");
+}
+
+
+
