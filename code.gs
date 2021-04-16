@@ -14,47 +14,13 @@ function onOpen() {
 
   ui
   .createMenu('BambooHR')
-  .addItem('Set API key', 'setAPIKey')
-  .addItem('Delete API key', 'resetKey')
-  .addItem('Set Start Date', 'setStartDate')
-  .addItem('Set End Date', 'setEndDate')
+  //.addItem('Set API key', 'setAPIKey')
+  //.addItem('Delete API key', 'resetKey')
+  //.addItem('Set Start Date', 'setStartDate')
+  //.addItem('Set End Date', 'setEndDate')
   .addItem('Get Holidays from BambooHR', 'main')
   .addSeparator()
   .addToUi();
-}
-
-function checkSetup(){
-  try{
-    var startDate = userProperties.getProperty('STARTDATE')
-    var endDate = userProperties.getProperty('ENDDATE')
-    var apiKey = userProperties.getProperty('APIKEY')
-  }
-  catch(e){
-      var message = 'Dont forget to setup ' + e.message.split(' ')[0];
-      var title = 'Setup ' + e.message.split(' ')[0];
-      SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
-      return false
-  }
-
-  if (startDate==null || startDate==""){
-      var message = 'Dont forget to setup' + e.message.split(' ')[0];
-      var title = 'Setup' + + e.message.split(' ')[0];
-      SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
-      return false
-    }
-    else if (endDate==null || endDate==""){
-      var message = 'Dont forget to setup your end date';
-      var title = 'Setup your end date!';
-      SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
-      return false
-    }
-    else if (apiKey==null || apiKey==""){
-      var message = 'Dont forget to setup your API Key';
-      var title = 'Setup your API KEY!';
-      SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
-      return false
-    }
-  return true
 }
 
 function setStartDate(){
@@ -133,7 +99,6 @@ function writeHolidaysOnSheet(){
 
 }
 
-//PROCESS FORM
 function processForm(dataObject){ 
 
   var apiKey = dataObject.apikey
@@ -147,11 +112,6 @@ function processForm(dataObject){
   openDialogue();
 }
  
-//INCLUDE HTML PARTS, EG. JAVASCRIPT, CSS, OTHER HTML FILES
-function include(filename) {
-  return HtmlService.createHtmlOutputFromFile(filename).getContent();
-}
-
 
 function getEmployees(headers){
   var response = callAPIwithGet(EMPLOYEESAPIURL, false, headers);
@@ -180,6 +140,43 @@ function getHolidays(headers){
   return holidays
 }
 
+
+//UTILS
+
+function checkSetup(){
+  try{
+    var startDate = userProperties.getProperty('STARTDATE')
+    var endDate = userProperties.getProperty('ENDDATE')
+    var apiKey = userProperties.getProperty('APIKEY')
+  }
+  catch(e){
+      var message = 'Dont forget to setup ' + e.message.split(' ')[0];
+      var title = 'Setup ' + e.message.split(' ')[0];
+      SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
+      return false
+  }
+
+  if (startDate==null || startDate==""){
+      var message = 'Dont forget to setup' + e.message.split(' ')[0];
+      var title = 'Setup' + + e.message.split(' ')[0];
+      SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
+      return false
+    }
+    else if (endDate==null || endDate==""){
+      var message = 'Dont forget to setup your end date';
+      var title = 'Setup your end date!';
+      SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
+      return false
+    }
+    else if (apiKey==null || apiKey==""){
+      var message = 'Dont forget to setup your API Key';
+      var title = 'Setup your API KEY!';
+      SpreadsheetApp.getActiveSpreadsheet().toast(message, title);
+      return false
+    }
+  return true
+}
+
 function callAPIwithGet(url, muteHttpExceptions, headers) {
   var options = {
             'method': 'get',
@@ -193,11 +190,13 @@ function callAPIwithGet(url, muteHttpExceptions, headers) {
   return response;
 }
 
-
 function openDialogue() {
   var h = HtmlService.createTemplateFromFile('loading').evaluate().setHeight(100).setWidth(100);
   SpreadsheetApp.getUi().showModalDialog(h, "Loading");
 }
 
+function include(filename) {
+  return HtmlService.createHtmlOutputFromFile(filename).getContent();
+}
 
 
